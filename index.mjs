@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 export async function handler(event) {
     const resp = await fetch('https://reqres.in/api/users?page=0', {
-        method: 'POST',
+        method: 'GET',
         headers: {'Content-Type': 'application/json'},
         body: '{}'
     });
