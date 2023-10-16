@@ -1,0 +1,24 @@
+FROM localstack/localstack:latest
+EXPOSE 4566
+EXPOSE 4510-4559
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBUG 1
+ENV DOCKER_HOST unix:///var/run/docker.sock
+VOLUME /var/run/docker.sock /var/lib/localstack
+RUN apt-get update -y --allow-unauthenticated
+RUN apt-get install -y tcl
+RUN apt-get install -y zip
+USER localstack
+RUN mkdir /home/localstack/Downloads
+WORKDIR /home/localstack/Downloads/
+RUN git clone https://github.com/danh8012/sample-localstack.git
+WORKDIR /home/localstack/Downloads/sample-localstack
+RUN npm install
+RUN zip -qr function.zip index.mjs node_modules
+RUN chmod 777 function.zip
+#RUN awslocal lambda create-function --function-name func-events-example --runtime nodejs18.x --zip-file fileb:///home/localstack/Downloads/sample-localstack/function.zip --handler index.handler --role arn:aws:iam::000000000000:role/role-func-events-example
+#RUN awslocal events put-rule --name cron-events-example --schedule-expression 'rate(1 minute)'
+#RUN awslocal lambda add-permission --function-name func-events-example --statement-id cron-events-example --action 'lambda:InvokeFunction' --principal events.amazonaws.com --source-arn arn:aws:events:us-east-1:000000000000:rule/cron-events-example
+#RUN awslocal events put-targets --rule cron-events-example --targets file:///home/localstack/Downloads/sample-localstack/targets.json
+#RUN awslocal logs create-log-group --log-group-name /aws/lambda/func-events-example
+#RUN awslocal logs create-log-stream --log-group-name /aws/lambda/func-events-example --log-stream-name stream-events-example
