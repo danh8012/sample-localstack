@@ -1,0 +1,14 @@
+{
+  "name": "my-lambda",
+  "version": "1.0.0",
+  "description": "my sample",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "HaoCK",
+  "license": "MIT License",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
