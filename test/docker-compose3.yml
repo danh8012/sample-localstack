@@ -1,0 +1,45 @@
+version: "latest"
+
+services:
+  localstack:
+    image: "haock_localstack_image:latest"
+    container_name: "haock_localstack_container"
+    privileged: true
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      - SERVICES=dynamodb
+      - DEBUG=${DEBUG-}
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - MAIN_CONTAINER_NAME=haock_localstack_container
+      - LS_LOG=trace
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-local}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-local}
+      - AWS_DEFAULT_REGION=${AWS_REGION:-us-east-1}
+    networks:
+      - "local"
+    volumes:
+      - "./init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  dynamodb-admin:
+    image: "aaronshaf/dynamodb-admin:latest"
+    container_name: "haock_dynamodb_viewer"
+    privileged: true
+    ports:
+      - "127.0.0.1:8001:8001"
+    environment:
+      - DYNAMO_ENDPOINT=http://localhost:4566
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-local}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-local}
+    depends_on:
+      - "localstack"
+    networks:
+      - "local"
+
+networks:
+  local:
+    driver: "bridge"

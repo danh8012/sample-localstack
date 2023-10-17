@@ -1,0 +1,16 @@
+version: "latest"
+
+services:
+  localstack:
+    container_name: "haock_dynamodb_container"
+    privileged: true
+    image: amazon/dynamodb-local
+    ports:
+      - 8001
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
