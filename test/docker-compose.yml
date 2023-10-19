@@ -9,12 +9,13 @@ services:
       - "4566:4566"            # LocalStack Gateway
       - "4510-4559:4510-4559"  # external services port range
     environment:
-      - DEBUG=${DEBUG-}
+      - DEBUG=1
       - DOCKER_HOST=unix:///var/run/docker.sock
       - MAIN_CONTAINER_NAME=haock_localstack_container
-      - LS_LOG=trace
-      - LOCALSTACK_HOST=localhost:4566
+      - LS_LOG=debug
+      - IMAGE_NAME=haock_localstack_image:latest
+      #- LOCALSTACK_HOST=172.16.1.4
     volumes:
-      - "./init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
+      #- "./init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
